@@ -1,0 +1,4 @@
+accessWidener	v2	official
+
+accessible	field	net/minecraft/client/gui/screens/worldselection/PresetEditor	EDITORS	Ljava/util/Map;
+mutable	field	net/minecraft/client/gui/screens/worldselection/PresetEditor	EDITORS	Ljava/util/Map;

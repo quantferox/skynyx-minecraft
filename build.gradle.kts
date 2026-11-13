@@ -20,6 +20,8 @@ loom {
 			sourceSet(sourceSets.getByName("client"))
 		}
 	}
+
+	accessWidenerPath = file("src/main/resources/skynyx.accesswidener")
 }
 
 fabricApi {

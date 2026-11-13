@@ -3,7 +3,8 @@
 	"package": "dev.quantferox.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin"
+		"ExampleClientMixin",
+		"PresetEditorMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
