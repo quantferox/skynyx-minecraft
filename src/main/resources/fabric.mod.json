@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "skynyx",
+	"version": "${version}",
+	"name": "SkyNyx",
+	"description": "SkyNyx - a Fabric mod for Minecraft 26.3.",
+	"authors": [
+		"QuantFerox"
+	],
+	"contact": {},
+	"license": "CC0-1.0",
+	"icon": "assets/skynyx/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.quantferox.SkyNyx"
+		],
+		"client": [
+			"dev.quantferox.client.SkyNyxClient"
+		],
+		"fabric-datagen": [
+			"dev.quantferox.client.SkyNyxDataGenerator"
+		]
+	},
+	"mixins": [
+		"skynyx.mixins.json",
+		{
+			"config": "skynyx.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
