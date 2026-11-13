@@ -158,10 +158,6 @@ public final class SkyblockIslandGenerator {
 			placeFrame(world, cx - 2, py, cz + dz, Direction.EAST);
 			placeFrame(world, cx + 2, py, cz + dz, Direction.WEST);
 		}
-		BlockState portal = Blocks.END_PORTAL.defaultBlockState();
-		for (int dx = -1; dx <= 1; dx++)
-			for (int dz = -1; dz <= 1; dz++)
-				world.setBlockAndUpdate(new BlockPos(cx + dx, py, cz + dz), portal);
 	}
 
 	private static void placeFrame(ServerLevel world, int x, int y, int z, Direction facing) {
