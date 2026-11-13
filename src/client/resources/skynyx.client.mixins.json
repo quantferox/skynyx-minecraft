@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"ExampleClientMixin",
-		"PresetEditorMixin"
+		"PresetEditorMixin",
+		"WorldTypeEntryMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

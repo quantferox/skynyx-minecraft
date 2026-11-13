@@ -1,6 +1,5 @@
 package dev.quantferox.client;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,31 +19,32 @@ import java.util.Optional;
 
 public final class SkyNyxSettingsScreen extends Screen {
 
-	private enum WorldKind {
-		VOID  ("\u2726 Void",   "\u00a77Floating island above the abyss", 0x55FFFF),
-		WATER ("\u25C6 Water",  "\u00a77Island surrounded by deep ocean",  0x5555FF),
-		GRASS ("\u25C6 Grass",  "\u00a77Island on infinite flat plains",   0x55FF55);
+	public enum WorldKind {
+		VOID ("\u2726 Void",   0x55FFFF),
+		WATER("\u25C6 Water",  0x5555FF),
+		GRASS("\u25C6 Grass",  0x55FF55);
 
-		final String label;
-		final String desc;
-		final int color;
-		WorldKind(String label, String desc, int color) {
-			this.label = label; this.desc = desc; this.color = color;
-		}
+		public final String label;
+		public final int color;
+		WorldKind(String label, int color) { this.label = label; this.color = color; }
 	}
 
-	private static final int ROW_W = 220;
+	// Remembered across screen opens so the World Type button updates
+	public static WorldKind lastSelected = WorldKind.VOID;
+
+	private static final int ROW_W = 200;
 	private static final int ROW_H = 28;
-	private static final int GAP   = 6;
+	private static final int GAP   = 8;
 
 	private final CreateWorldScreen parent;
 	private final WorldCreationContext context;
-	private WorldKind selected = WorldKind.VOID;
+	private WorldKind selected;
 
 	private SkyNyxSettingsScreen(CreateWorldScreen parent, WorldCreationContext context) {
-		super(Component.literal("\u00a7bSkyNyx \u00a77\u2014 Choose World Type"));
+		super(Component.literal("\u00a7bSkyNyx \u00a77\u2014 World Type"));
 		this.parent  = parent;
 		this.context = context;
+		this.selected = lastSelected;
 	}
 
 	public static PresetEditor create() {
@@ -54,10 +54,11 @@ public final class SkyNyxSettingsScreen extends Screen {
 	@Override
 	protected void init() {
 		int cx = width / 2;
-		int totalH = WorldKind.values().length * (ROW_H + GAP) - GAP + 36;
+		int rows = WorldKind.values().length;
+		int totalH = rows * (ROW_H + GAP) - GAP + 36;
 		int startY = height / 2 - totalH / 2;
 
-		for (int i = 0; i < WorldKind.values().length; i++) {
+		for (int i = 0; i < rows; i++) {
 			WorldKind kind = WorldKind.values()[i];
 			int y = startY + i * (ROW_H + GAP);
 			addRenderableWidget(Button.builder(
@@ -66,15 +67,11 @@ public final class SkyNyxSettingsScreen extends Screen {
 					.bounds(cx - ROW_W / 2, y, ROW_W, ROW_H).build());
 		}
 
-		int doneY = startY + WorldKind.values().length * (ROW_H + GAP) + 8;
-		addRenderableWidget(Button.builder(
-						Component.literal("Done"),
-						b -> apply())
-				.bounds(cx - 55, doneY, 110, 24).build());
-		addRenderableWidget(Button.builder(
-						Component.literal("Cancel"),
-						b -> minecraft.setScreenAndShow(parent))
-				.bounds(cx + 60, doneY, 70, 24).build());
+		int doneY = startY + rows * (ROW_H + GAP) + 8;
+		addRenderableWidget(Button.builder(Component.literal("Done"),   b -> apply())
+				.bounds(cx - 56, doneY, 108, 24).build());
+		addRenderableWidget(Button.builder(Component.literal("Cancel"), b -> minecraft.setScreenAndShow(parent))
+				.bounds(cx + 56, doneY, 76, 24).build());
 	}
 
 	@Override
@@ -82,34 +79,30 @@ public final class SkyNyxSettingsScreen extends Screen {
 		extractMenuBackground(gui);
 
 		int cx = width / 2;
-		int totalH = WorldKind.values().length * (ROW_H + GAP) - GAP + 36;
+		int rows = WorldKind.values().length;
+		int totalH = rows * (ROW_H + GAP) - GAP + 36;
 		int startY = height / 2 - totalH / 2;
 
-		gui.centeredText(font, title, cx, startY - 24, 0xFFFFFF);
+		gui.centeredText(font, title, cx, startY - 22, 0xFFFFFF);
 
-		for (int i = 0; i < WorldKind.values().length; i++) {
+		for (int i = 0; i < rows; i++) {
 			WorldKind kind = WorldKind.values()[i];
 			int y = startY + i * (ROW_H + GAP);
-			boolean isSelected = kind == selected;
+			boolean isSel = kind == selected;
 
-			// highlight border around selected row
-			if (isSelected) {
+			if (isSel) {
 				gui.fill(cx - ROW_W / 2 - 2, y - 2, cx + ROW_W / 2 + 2, y + ROW_H + 2, kind.color | 0xFF000000);
 				gui.fill(cx - ROW_W / 2 - 1, y - 1, cx + ROW_W / 2 + 1, y + ROW_H + 1, 0xFF111111);
 			}
-
-			// radio indicator
-			String radio = isSelected ? "\u00a7a\u25CF" : "\u00a77\u25CB";
+			String radio = isSel ? "\u00a7a\u25CF" : "\u00a77\u25CB";
 			gui.text(font, radio, cx - ROW_W / 2 - 14, y + (ROW_H - 8) / 2, 0xFFFFFF);
-
-			// description under button
-			gui.centeredText(font, Component.literal(kind.desc), cx + 20, y + ROW_H + 2 - GAP, isSelected ? kind.color | 0xFF000000 : 0x888888);
 		}
 
 		super.extractRenderState(gui, mouseX, mouseY, partialTick);
 	}
 
 	private void apply() {
+		lastSelected = selected;
 		parent.getUiState().updateDimensions((registryAccess, currentDims) -> {
 			var biomes = registryAccess.lookupOrThrow(Registries.BIOME);
 			FlatLevelGeneratorSettings flat = switch (selected) {
