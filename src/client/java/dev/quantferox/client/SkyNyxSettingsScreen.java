@@ -20,9 +20,9 @@ import java.util.Optional;
 public final class SkyNyxSettingsScreen extends Screen {
 
 	public enum WorldKind {
-		VOID ("\u2726 Void",   0x55FFFF),
-		WATER("\u25C6 Water",  0x5555FF),
-		GRASS("\u25C6 Grass",  0x55FF55);
+		VOID ("\u00a77\u2726 Void",   0xAAAAAA),
+		WATER("\u00a79\u2726 Water",  0x5555FF),
+		GRASS("\u00a7a\u2726 Grass",  0x55FF55);
 
 		public final String label;
 		public final int color;
@@ -68,10 +68,11 @@ public final class SkyNyxSettingsScreen extends Screen {
 		}
 
 		int doneY = startY + rows * (ROW_H + GAP) + 8;
+		int btnLeft = cx - ROW_W / 2;
 		addRenderableWidget(Button.builder(Component.literal("Done"),   b -> apply())
-				.bounds(cx - 56, doneY, 108, 24).build());
+				.bounds(btnLeft, doneY, 96, 24).build());
 		addRenderableWidget(Button.builder(Component.literal("Cancel"), b -> minecraft.setScreenAndShow(parent))
-				.bounds(cx + 56, doneY, 76, 24).build());
+				.bounds(btnLeft + 104, doneY, 96, 24).build());
 	}
 
 	@Override
