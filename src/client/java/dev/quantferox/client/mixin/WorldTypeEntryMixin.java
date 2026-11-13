@@ -24,7 +24,7 @@ public class WorldTypeEntryMixin {
 		WorldCreationUiState.WorldTypeEntry self = (WorldCreationUiState.WorldTypeEntry) (Object) this;
 		if (self.preset().is(SKYBLOCK_KEY)) {
 			SkyNyxSettingsScreen.WorldKind kind = SkyNyxSettingsScreen.lastSelected;
-			cir.setReturnValue(Component.literal("\u00a7b" + kind.label));
+			cir.setReturnValue(Component.literal("\u00a7bSkyNyx \u00a77" + kind.label));
 		}
 	}
 }
