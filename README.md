@@ -1,4 +1,4 @@
-# SkyNyx
+# SkyNyx v3.0
 
 ## Setup
 
